@@ -1,0 +1,18 @@
+{
+  "name": "speedread",
+  "version": "0.1.0",
+  "description": "RSVP speed reader for long prose: one word at a time at a fixed focal point",
+  "author": { "name": "Jimmy Steinmetz", "url": "https://github.com/jimmysteinmetz" },
+  "homepage": "https://github.com/jimmysteinmetz/b-sides/tree/main/plugins/speedread",
+  "repository": "https://github.com/jimmysteinmetz/b-sides",
+  "license": "MIT",
+  "keywords": ["rsvp", "speed-reading", "reader", "markdown"],
+  "userConfig": {
+    "listsAsProse": {
+      "type": "boolean",
+      "title": "Play lists word by word",
+      "description": "Lists show whole until you press Enter. Turn this on to play list items one word at a time, like prose.",
+      "default": false
+    }
+  }
+}

@@ -3,7 +3,7 @@ import { HEADING_MS, wordFactor } from './timing'
 // Markdown in, a flat list of things to show out: words to flash, headings to
 // card, and blocks (tables, code, lists...) to show whole until Enter.
 
-// Claude's replies are list-heavy; flip to false to flash list items as prose.
+// Claude's replies are list-heavy, so lists show whole unless the listsAsProse option is on.
 export const LISTS_AS_BLOCKS = true
 
 // A Client's props are capped at 100k serialized chars; leave headroom.

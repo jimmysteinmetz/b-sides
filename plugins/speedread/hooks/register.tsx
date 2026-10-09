@@ -107,8 +107,13 @@ const awaitPaste = ($: EngineInterface, columns: number | undefined) => {
 }
 
 // Opens the pane on a source; returns why not, if it could not.
-const openReader = async ($: EngineInterface, source: Source, columns: number): Promise<string | undefined> => {
-  const pages = paginate(parse(source.text))
+const openReader = async (
+  $: EngineInterface,
+  source: Source,
+  columns: number,
+  listsAsBlocks: boolean,
+): Promise<string | undefined> => {
+  const pages = paginate(parse(source.text, listsAsBlocks))
   if (!pages.length) return 'nothing to read there.'
 
   const id = fingerprint(source.text)
@@ -141,7 +146,9 @@ const openReader = async ($: EngineInterface, source: Source, columns: number): 
   return opened.isPlaced ? undefined : `the pane could not be placed (${opened.reason}).`
 }
 
-export const register: Register = on => {
+export const register: Register = (on, options) => {
+  const listsAsBlocks = options.listsAsProse !== true
+
   on('session.start', async ($, e, next) => {
     await $.command.register({
       name: 'speedread',
@@ -165,7 +172,7 @@ export const register: Register = on => {
 
     const source = await loadSource($, e.args)
     if (typeof source === 'string') return { text: source }
-    const problem = await openReader($, source, columns)
+    const problem = await openReader($, source, columns, listsAsBlocks)
 
     return problem ? { text: problem } : {}
   })
@@ -175,7 +182,7 @@ export const register: Register = on => {
     if (pasteColumns === undefined || e.origin.kind !== 'composer') return next(e)
     const columns = pasteColumns
     awaitPaste($, undefined)
-    const problem = await openReader($, { text: e.text, title: 'pasted text', isFile: false }, columns)
+    const problem = await openReader($, { text: e.text, title: 'pasted text', isFile: false }, columns, listsAsBlocks)
 
     return { drop: problem ?? 'opened in speedread, not sent to Claude.' }
   }).catch(($, e, next) => (next.called ? next(e) : { drop: 'speedread could not open the reader; nothing was sent to Claude.' }))

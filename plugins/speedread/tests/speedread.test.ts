@@ -5,6 +5,8 @@ const DOC = ['# Title', '', 'One two three. Four five.', '', '| a | b |', '|---|
   '\n',
 )
 
+const LIST = '- Alpha beta.\n- Gamma delta.'
+
 const PANE = {
   plugin: 'speedread',
   component: 'Pane',
@@ -170,6 +172,23 @@ describe('speedread', () => {
     const result = await $.prompt.submit({ text: 'private notes', origin: { kind: 'composer' }, wait: false })
     expect(result.drop).toMatch(/nothing was sent to Claude/)
     expect(sent).toEqual([])
+  })
+
+  test('lists show whole by default', async ($, on) => {
+    engineBeneath(on, { 'list.md': LIST })
+    await $.command.run(typed('list.md'))
+    const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
+    await ui.pointer({ type: 'down', x: 1, y: 1, button: 'left' })
+    expect(await ui.find({ in: 'reader', text: /List · Enter to continue/ })).toBeDefined()
+  })
+
+  test('with listsAsProse on, list items play word by word', { options: { listsAsProse: true } }, async ($, on) => {
+    engineBeneath(on, { 'list.md': LIST })
+    await $.command.run(typed('list.md'))
+    const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
+    await ui.pointer({ type: 'down', x: 1, y: 1, button: 'left' })
+    await ui.advance(1000)
+    expect((await ui.find({ in: 'reader', key: 'word' }))?.text).toBe('Alpha')
   })
 
   test('refuses other file types and missing files with a message', async ($, on) => {

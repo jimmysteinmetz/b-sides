@@ -1,6 +1,6 @@
 {
-  "name": "speedread-cc",
-  "description": "speedread: an RSVP speed reader for Claude Code",
+  "name": "b-sides",
+  "description": "Small mods for Claude Code",
   "owner": {
     "name": "Jimmy Steinmetz",
     "url": "https://github.com/jimmysteinmetz"
@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "speedread",
-      "source": "./",
+      "source": "./plugins/speedread",
       "description": "RSVP speed reader for long prose: one word at a time at a fixed focal point"
     }
   ]
